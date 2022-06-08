@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "vnu"
+version = "0.1.0"
+description = "A small utility to automate \\\"uninstalling\\\" Node from Volta"
+authors = ["Paul Glushak <paul@glushak.net>"]
+license = "MIT"
+repository = "https://github.com/hxii/vnu"
+homepage = "https://github.com/hxii/vnu"
+keywords = ["volta","node","nvm"]
+readme = "README.md"
+
+
+[tool.poetry.scripts]
+vnu = "vnu.main:main"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+termcolor = "^1.1.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
