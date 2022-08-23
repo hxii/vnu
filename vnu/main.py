@@ -1,5 +1,8 @@
 import argparse
 import logging
+import os
+import platform
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -96,28 +99,19 @@ class vnu:
             version (str): the version to remove
         """
         print(f"Removing Node v{version}")
-        remove_image = subprocess.run(
-            ["rm", "-r", f"{Path.home()}/.volta/tools/image/node/{version}"],
-            text=True,
-            capture_output=True,
-        )
-        logging.info(f"{' '.join(remove_image.args)}")
-        logging.info(remove_image.stdout)
-        remove_archives = subprocess.run(
-            [
-                "find",
-                f"{Path.home()}/.volta/tools/inventory/node",
-                "-type",
-                "f",
-                "-name",
-                f"'*v{version}*'",
-                "-delete",
-            ],
-            text=True,
-            capture_output=True,
-        )
-        logging.info(f"{' '.join(remove_archives.args)}")
-        logging.info(remove_archives.stdout)
+        if platform.system() == "Windows":
+            voltatools = Path(os.getenv('LOCALAPPDATA')).joinpath('Volta/tools')
+        else:
+            voltatools = Path.home().joinpath(".volta/tools")
+        imagelocation = voltatools.joinpath("image/node").joinpath(version)
+        logging.info(f"Removing file {imagelocation.absolute()}")
+        shutil.rmtree(imagelocation)
+        remove_image = True
+        inventorylocation = voltatools.joinpath("inventory/node")
+        for item in inventorylocation.glob(f"*v{version}*"):
+            logging.info(f"Removing file {item.absolute()}")
+            item.unlink(missing_ok=True)
+        remove_archives = True
         return remove_image and remove_archives
 
 
